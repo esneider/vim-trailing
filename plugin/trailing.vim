@@ -3,7 +3,13 @@ let s:max_size = get(g:, 'trailing_max_size', 50) * 1024 * 1024
 function! s:checkSize(fname)
 
     if ! &bin && getfsize(a:fname) < s:max_size
-        silent! %s/\v\s+$//ge
+        let view = winsaveview()
+        try
+            silent %s/\v\s+$//ge
+            call histdel('/', -1)
+        catch
+        endtry
+        call winrestview(view)
     endif
 endf
 
